@@ -9,7 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import { FaQuoteLeft, FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import customerTop from "../../../assets/customer-top.png";
+import customerTop from "../../../assets/icons/customer-top.png";
 
 const reviews = [
   {

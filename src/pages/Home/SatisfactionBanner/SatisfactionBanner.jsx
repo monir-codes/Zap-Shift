@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
-import LocationMerchant from "../../../assets/location-merchant.png";
+import LocationMerchant from "../../../assets/icons/location-merchant.png";
 
 const SatisfactionBanner = () => {
   return (

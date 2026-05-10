@@ -1,5 +1,5 @@
 
-import logoImage from '../../assets/logo.png';
+import logoImage from '../../assets/icons/logo.png';
 const Logo = () => {
     return (
         <div className='flex items-end '>
