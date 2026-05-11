@@ -6,8 +6,44 @@ import { FcGoogle } from "react-icons/fc";
 // 👉 your image import
 import deliveryImg from "../../../assets/icons/authImage.png";
 import Logo from "../../../components/Logo/Logo";
+import { Link, Navigate } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import { useForm } from "react-hook-form";
 
 export default function LoginPage() {
+
+  const {signIn, user, setLoading , signInWithGoogle} = useAuth();
+  const {register, handleSubmit, formState: {errors}} = useForm();
+
+  const handleSignIn = (data) => {
+    setLoading(true);
+    signIn(data).then(result => {
+      const user = result.user;
+      console.log(user);
+      navigation('/'); // Navigate to home page after successful login
+    }).catch(error => {
+      console.log(error);
+      setLoading(false);
+    }) 
+  }
+
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    signInWithGoogle().then(result => {
+      const user = result.user;
+      setLoading(false);
+      navigation('/'); // Navigate to home page after successful login
+    }).catch(error => {
+      console.log(error);
+      setLoading(false);
+    });
+  };
+
+  if (user) {
+    setLoading(false);
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-white">
       {/* LEFT SIDE */}
@@ -35,7 +71,7 @@ export default function LoginPage() {
           </p>
 
           {/* FORM */}
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit(handleSignIn)}>
             {/* Email */}
             <div>
               <label className="text-sm text-gray-700 block mb-2">
@@ -43,7 +79,8 @@ export default function LoginPage() {
               </label>
 
               <input
-                type="email"
+                type="email" 
+                {...register('email', {required: 'Email is required'})}
                 placeholder="Email"
                 className="w-full h-12 rounded-md border border-gray-300 px-4 outline-none focus:border-[#C7EA46] transition-all"
               />
@@ -57,10 +94,14 @@ export default function LoginPage() {
 
               <input
                 type="password"
+                {...register('password', {required: 'Password is required'})} 
                 placeholder="Password"
                 className="w-full h-12 rounded-md border border-gray-300 px-4 outline-none focus:border-[#C7EA46] transition-all"
               />
             </div>
+
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
 
             {/* Forgot */}
             <div className="-mt-1">
@@ -85,12 +126,12 @@ export default function LoginPage() {
           {/* Register */}
           <div className="mt-5 text-sm text-gray-500">
             Don’t have any account?{" "}
-            <a
-              href="/"
+            <Link
+              to={'/register'}
               className="text-[#9BB92F] font-medium hover:underline"
             >
               Register
-            </a>
+            </Link>
           </div>
 
           {/* OR */}
@@ -101,7 +142,7 @@ export default function LoginPage() {
           </div>
 
           {/* Google Login */}
-          <button className="w-full h-12 rounded-md bg-[#F1F3F6] hover:bg-[#e9edf1] transition-all flex items-center justify-center gap-3 text-sm font-medium text-gray-700">
+          <button className="w-full h-12 rounded-md bg-[#F1F3F6] hover:bg-[#e9edf1] transition-all flex items-center justify-center gap-3 text-sm font-medium text-gray-700" onClick={handleGoogleSignIn}>
             <FcGoogle size={20} />
             Login with google
           </button>

@@ -3,7 +3,8 @@ import RootLayout from "../Layouts/RootLayout/RootLayout";
 import Home from "../pages/Home/Home/Home";
 import AuthLayout from "../Layouts/RootLayout/AuthLayout/AuthLayout";
 import LoginPage from "../pages/AuthPages/Loginpage/Loginpage";
-import Register from "../pages/AuthPages/Loginpage/Register/Register";
+import Register from "../pages/AuthPages/Register/Register";
+import ForgotPassword from "../pages/AuthPages/ForgotPassword/ForgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
         {
             path: '/register',
             Component: Register,
+        },
+        {
+            path: '/forgot-password',
+            Component: ForgotPassword
         }
     ]
 }
