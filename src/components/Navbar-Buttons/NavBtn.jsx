@@ -15,7 +15,7 @@ const NavBtn = () => {
                 user ? <button onClick={handleSignOut} className='btn btn-outline border-[#DADADA] '>Logout</button>:
                 <Link to="/login" className='btn btn-outline border-[#DADADA] '>Sign In</Link>
             }
-            <Link to="/beARider" className='btn btn-secondary'>Be A Rider</Link>
+            <Link to="/rider" className='btn btn-secondary'>Be A Rider</Link>
         </div>
     );
 };
