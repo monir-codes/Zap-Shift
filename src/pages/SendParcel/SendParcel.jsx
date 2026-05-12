@@ -1,294 +1,288 @@
 // SendParcel.jsx
 
-import { useForm } from "react-hook-form";
-import { motion } from "framer-motion";
+import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
 
-
 const SendParcel = () => {
-  const locations = useLoaderData();
-  const districts = locations.map((location) => location.district);
-  const uniqueDistricts = [...new Set(districts)];
-  console.log(locations)
-  console.log(uniqueDistricts)
+  const { register, handleSubmit, control } = useForm();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const serviceAria = useLoaderData();
+  const regionsDuplicate = serviceAria.map((r) => r.region);
+  const regions = [...new Set(regionsDuplicate)];
+  const senderRegions = useWatch({control, name: "senderRegion"});
+  const receiverRegion = useWatch({control, name: "receiverRegion"}); 
+
+  const districtByRegion = (region) => {
+    const regionsDistricts = serviceAria.filter((d) => d.region === region);
+    const districts = regionsDistricts.map((d) => d.district);
+    return districts;
+  }
 
   const onSubmit = (data) => {
     console.log(data);
   };
 
   return (
-    <div className="bg-[#EAEAEA] min-h-screen px-4 py-8 md:px-8 lg:px-12">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto bg-[#F5F5F5] rounded-[28px] p-6 md:p-10 lg:p-14"
-      >
+    <div className="min-h-screen bg-[#EAEAEA] p-4 md:p-8">
+      <div className="max-w-6xl mx-auto bg-[#F5F5F5] rounded-3xl p-6 md:p-10">
         {/* Heading */}
-        <motion.h1
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-3xl md:text-5xl font-extrabold text-[#03373D]"
-        >
+        <h1 className="text-3xl md:text-5xl font-bold text-[#03373D]">
           Send A Parcel
-        </motion.h1>
+        </h1>
 
-        <p className="mt-4 text-[#03373D] font-semibold">
+        <p className="mt-4 font-semibold text-[#03373D]">
           Enter your parcel details
         </p>
 
-        <div className="border-t border-gray-300 my-6"></div>
+        <div className="border-b border-gray-300 my-6"></div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Parcel Type */}
-          <div className="flex items-center gap-8 mb-8">
-            <label className="flex items-center gap-2 text-sm text-[#03373D]">
+          {/* Radio Button */}
+          <div className="flex gap-8 mb-8">
+            <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
                 value="Document"
-                {...register("parcelType")}
+                {...register("type")}
                 defaultChecked
-                className="accent-lime-500"
               />
               Document
             </label>
 
-            <label className="flex items-center gap-2 text-sm text-[#03373D]">
-              <input
-                type="radio"
-                value="Non-Document"
-                {...register("parcelType")}
-                className="accent-lime-500"
-              />
+            <label className="flex items-center gap-2 text-sm">
+              <input type="radio" value="Non-Document" {...register("type")} />
               Non-Document
             </label>
           </div>
 
           {/* Parcel Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
-            <InputField
-              label="Parcel Name"
-              placeholder="Parcel Name"
-              register={register}
-              name="parcelName"
-              errors={errors}
-            />
+            <div>
+              <label className="text-sm font-semibold">Parcel Name</label>
 
-            <InputField
-              label="Parcel Weight (KG)"
-              placeholder="Parcel Weight (KG)"
-              register={register}
-              name="parcelWeight"
-              errors={errors}
-            />
+              <input
+                type="text"
+                placeholder="Parcel Name"
+                {...register("parcelName")}
+                className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-semibold">
+                Parcel Weight (KG)
+              </label>
+
+              <input
+                type="text"
+                placeholder="Parcel Weight (KG)"
+                {...register("parcelWeight")}
+                className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+              />
+            </div>
           </div>
 
           {/* Sender + Receiver */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Sender */}
+            {/* Sender Details */}
             <div>
-              <h3 className="font-bold text-[#03373D] mb-5">
-                Sender Details
-              </h3>
+              <h2 className="font-bold mb-5 text-[#03373D]">Sender Details</h2>
 
               <div className="space-y-4">
-                <InputField
-                  label="Sender Name"
-                  placeholder="Sender Name"
-                  register={register}
-                  name="senderName"
-                  errors={errors}
-                />
+                <div>
+                  <label className="text-sm font-semibold">Sender Name</label>
 
-                <InputField
-                  label="Address"
-                  placeholder="Address"
-                  register={register}
-                  name="senderAddress"
-                  errors={errors}
-                />
+                  <input
+                    type="text"
+                    placeholder="Sender Name"
+                    {...register("senderName")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
 
-                <InputField
-                  label="Sender Phone No"
-                  placeholder="Sender Phone No"
-                  register={register}
-                  name="senderPhone"
-                  errors={errors}
-                />
+                <div>
+                  <label className="text-sm font-semibold">Address</label>
 
-                <SelectField
-                  label="Your District"
-                  name="senderDistrict"
-                  register={register}
-                  options={districts}
-                />
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    {...register("senderAddress")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
 
-                <TextAreaField
-                  label="Pickup Instruction"
-                  placeholder="Pickup Instruction"
-                  register={register}
-                  name="pickupInstruction"
-                />
+                <div>
+                  <label className="text-sm font-semibold">
+                    Sender Phone No
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="Sender Phone No"
+                    {...register("senderPhone")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold">Your Region</label>
+
+                  <select
+                    {...register("senderRegion")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  >
+                    <option>Select your region</option>
+                    {regions.map((r, i) => (
+                      <option key={i} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold">Your District</label>
+
+                  <select
+                    {...register("senderDistrict")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  >
+                    <option>Select your district</option>
+                    {
+                      districtByRegion(senderRegions)?.map((d, i) => (
+                        <option key={i} value={d}>
+                          {d}
+                        </option>
+                      ))
+                    }
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold">
+                    Pickup Instruction
+                  </label>
+
+                  <textarea
+                    rows="4"
+                    placeholder="Pickup Instruction"
+                    {...register("pickupInstruction")}
+                    className="w-full border border-gray-300 rounded-md p-4 mt-2 outline-none"
+                  ></textarea>
+                </div>
               </div>
             </div>
 
-            {/* Receiver */}
+            {/* Receiver Details */}
             <div>
-              <h3 className="font-bold text-[#03373D] mb-5">
+              <h2 className="font-bold mb-5 text-[#03373D]">
                 Receiver Details
-              </h3>
+              </h2>
 
               <div className="space-y-4">
-                <InputField
-                  label="Receiver Name"
-                  placeholder="Receiver Name"
-                  register={register}
-                  name="receiverName"
-                  errors={errors}
-                />
+                <div>
+                  <label className="text-sm font-semibold">Receiver Name</label>
 
-                <InputField
-                  label="Receiver Address"
-                  placeholder="Address"
-                  register={register}
-                  name="receiverAddress"
-                  errors={errors}
-                />
+                  <input
+                    type="text"
+                    placeholder="Receiver Name"
+                    {...register("receiverName")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
 
-                <InputField
-                  label="Receiver Contact No"
-                  placeholder="Receiver Contact No"
-                  register={register}
-                  name="receiverPhone"
-                  errors={errors}
-                />
+                <div>
+                  <label className="text-sm font-semibold">
+                    Receiver Address
+                  </label>
 
-                <SelectField
-                  label="Receiver District"
-                  name="receiverDistrict"
-                  register={register}
-                  options={districts}
-                />
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    {...register("receiverAddress")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
 
-                <TextAreaField
-                  label="Delivery Instruction"
-                  placeholder="Delivery Instruction"
-                  register={register}
-                  name="deliveryInstruction"
-                />
+                <div>
+                  <label className="text-sm font-semibold">
+                    Receiver Contact No
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="Receiver Contact No"
+                    {...register("receiverPhone")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold">
+                    Receiver Region
+                  </label>
+
+                  <select
+                    {...register("receiverRegion")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  >
+                    <option>Select your region</option>
+                    {regions.map((r, i) => (
+                      <option key={i} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold">
+                    Receiver District
+                  </label>
+
+                  <select
+                    {...register("receiverDistrict")}
+                    className="w-full border border-gray-300 rounded-md h-11 px-4 mt-2 outline-none"
+                  >
+                    <option>Select your district</option>
+                    {districtByRegion(receiverRegion)?.map((d, i) => (
+                      <option key={i} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold">
+                    Delivery Instruction
+                  </label>
+
+                  <textarea
+                    rows="4"
+                    placeholder="Delivery Instruction"
+                    {...register("deliveryInstruction")}
+                    className="w-full border border-gray-300 rounded-md p-4 mt-2 outline-none"
+                  ></textarea>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Note */}
-          <p className="text-sm text-[#03373D] mt-8">
-            * Pickup Time 4pm-7pm Approx.
-          </p>
+          {/* Bottom Text */}
+          <p className="mt-8 text-sm">* Pickup Time 4pm-7pm Approx.</p>
 
           {/* Button */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          <button
             type="submit"
-            className="mt-6 bg-[#C6E548] hover:bg-[#b6d63f] transition-all duration-300 text-[#03373D] font-bold px-8 py-3 rounded-md shadow-sm"
+            className="mt-6 bg-lime-400 hover:bg-lime-500 transition px-8 py-3 rounded-md font-semibold"
           >
             Proceed to Confirm Booking
-          </motion.button>
+          </button>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 };
 
 export default SendParcel;
-
-/* ---------------------------------------------------------------- */
-
-const InputField = ({
-  label,
-  placeholder,
-  register,
-  name,
-  errors,
-}) => {
-  return (
-    <div>
-      <label className="block text-sm font-semibold text-[#03373D] mb-2">
-        {label}
-      </label>
-
-      <input
-        type="text"
-        placeholder={placeholder}
-        {...register(name, { required: `${label} is required` })}
-        className="w-full h-11 border border-gray-300 rounded-md px-4 outline-none focus:border-lime-500 focus:ring-2 focus:ring-lime-200 transition-all bg-white"
-      />
-
-      {errors[name] && (
-        <p className="text-red-500 text-sm mt-1">
-          {errors[name]?.message}
-        </p>
-      )}
-    </div>
-  );
-};
-
-/* ---------------------------------------------------------------- */
-
-const SelectField = ({
-  label,
-  name,
-  register,
-  options,
-}) => {
-  return (
-    <div>
-      <label className="block text-sm font-semibold text-[#03373D] mb-2">
-        {label}
-      </label>
-
-      <select
-        {...register(name)}
-        className="w-full h-11 border border-gray-300 rounded-md px-4 outline-none focus:border-lime-500 focus:ring-2 focus:ring-lime-200 transition-all bg-white"
-      >
-        <option value="">Select your district</option>
-
-        {options.map((district) => (
-          <option key={district} value={district}>
-            {district}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
-/* ---------------------------------------------------------------- */
-
-const TextAreaField = ({
-  label,
-  placeholder,
-  register,
-  name,
-}) => {
-  return (
-    <div>
-      <label className="block text-sm font-semibold text-[#03373D] mb-2">
-        {label}
-      </label>
-
-      <textarea
-        rows="4"
-        placeholder={placeholder}
-        {...register(name)}
-        className="w-full border border-gray-300 rounded-md px-4 py-3 outline-none focus:border-lime-500 focus:ring-2 focus:ring-lime-200 transition-all resize-none bg-white"
-      />
-    </div>
-  );
-};

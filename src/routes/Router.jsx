@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
         {
             path: '/send-parcel',  
             element: <PrivateRoute><SendParcel /></PrivateRoute>,
-            loader: () => fetch('/public/warehouses.json')
+            loader: () => fetch('/public/warehouses.json').then(res => res.json())
         },
         {
             path: '/about-us',
